@@ -1,0 +1,9 @@
+std = "selene_definitions"
+
+exclude = ["Packages/*", "net_output/**", ".src/shared/jecs.luau"]
+
+[lints]
+mixed_table = "allow"
+multiple_statements = "allow"
+undefined_variable = "allow"
+incorrect_standard_library_use = "allow"

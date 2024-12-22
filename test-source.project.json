@@ -1,0 +1,25 @@
+{
+	"name": "rline-tests",
+
+	"tree": {
+		"$className": "DataModel",
+
+		"ReplicatedStorage": {
+			"Packages": {
+				"$path": "Packages",
+
+				"rline": {
+					"$path": "src/"
+				}
+			},
+
+			"stories": {
+				"$path": "stories/"
+			},
+
+			"tests": {
+				"$path": "tests/roblox/"
+			}
+		}
+	}
+}

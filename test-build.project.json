@@ -1,0 +1,25 @@
+{
+	"name": "rline-tests",
+
+	"tree": {
+		"$className": "DataModel",
+
+		"ReplicatedStorage": {
+			"Packages": {
+				"$path": "Packages",
+
+				"rline": {
+					"$path": "build/package/"
+				}
+			},
+
+			"stories": {
+				"$path": "build/stories/"
+			},
+
+			"tests": {
+				"$path": "build/tests/"
+			}
+		}
+	}
+}
