@@ -15,6 +15,8 @@ rline.colorful = colorful
 
 net.init()
 
-if RunService:IsClient() then mount(Players.LocalPlayer.PlayerGui) end
+if RunService:IsClient() then
+	mount(Players.LocalPlayer.PlayerGui)
+end
 
 return rline
