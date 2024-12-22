@@ -1,5 +1,5 @@
 [dependencies]
-luauSignal = "ffrostfall/luausignal@0.2.1"
+signal = "ffrostfall/luausignal@0.2.1"
 vide = "alicesaidhi/vide@0.3.1-lite.649"
 
 [dev-dependencies]
