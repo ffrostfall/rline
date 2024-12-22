@@ -5,6 +5,7 @@
 				"name": "path",
 				"sources": {
 					"@pkg": "Packages/",
+					"@dev-pkg": "DevPackages/",
 					"@tests": "tests/",
 					"@src": "src/",
 					"@components": "src/ui/components"
