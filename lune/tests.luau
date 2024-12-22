@@ -14,7 +14,9 @@ local CFrame = (roblox :: any).CFrame :: typeof(CFrame)
 local stuff = {}
 
 function injectedRequire(path: string): any
-	if string.sub(path, 1, 5) == "@lune" then return require(path) :: any end
+	if string.sub(path, 1, 5) == "@lune" then
+		return require(path) :: any
+	end
 
 	local workingPath = ""
 	local parts = string.split(path, "/")
@@ -25,7 +27,14 @@ function injectedRequire(path: string): any
 
 		workingPath ..= table.concat(parts, "/")
 
-		local compiled = luau.compile(fs.readFile(workingPath .. ".luau"))
+		local filePath = ""
+		if fs.isDir(workingPath) then
+			filePath = workingPath .. "/init.luau"
+		else
+			filePath = workingPath .. ".luau"
+		end
+
+		local compiled = luau.compile(fs.readFile(filePath))
 		local loaded = luau.load(compiled, {
 			environment = env(),
 		})
