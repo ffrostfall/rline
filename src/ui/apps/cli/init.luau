@@ -51,8 +51,6 @@ return function()
 				return line({
 					text = text(),
 					order = index,
-
-					context = "client",
 				})
 			end),
 		}),

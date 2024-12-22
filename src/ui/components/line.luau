@@ -4,7 +4,6 @@ local styling = require("@src/ui/styling")
 local vide = require("@pkg/vide")
 
 export type Props = {
-	context: "server" | "client",
 	order: number,
 	text: string,
 }

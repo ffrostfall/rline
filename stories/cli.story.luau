@@ -1,7 +1,7 @@
 local cli = require("@src/ui/apps/cli")
 local colorful = require("@src/colorful")
 local state = require("@src/ui/state")
-local uilabs = require("@pkg/ui-labs")
+local uilabs = require("@dev-pkg/ui-labs")
 local vide = require("@pkg/vide")
 
 return uilabs.CreateVideStory({
