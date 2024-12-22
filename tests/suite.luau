@@ -39,7 +39,7 @@ local function printTable(tbl: { [unknown]: unknown })
 	return `\{\n{table.concat(lines, ",\n")}\n\}`
 end
 
-local function formatTostring(value: unknown): string
+local function prettytostring(value: unknown): string
 	if typeof(value) == "table" then
 		return printTable(value :: any)
 	else
@@ -47,49 +47,75 @@ local function formatTostring(value: unknown): string
 	end
 end
 
-local function shallowEquals(tableA: {}, tableB: {})
-	if tableA == tableB then
-		return true
+-- Taken from Roact: https://github.com/Roblox/roact/blob/master/src/assertDeepEqual.lua
+local function deepEqual(a: any, b: any): (boolean, string?)
+	if typeof(a) ~= typeof(b) then
+		local message = ("{1} is of type %s, but {2} is of type %s"):format(typeof(a), typeof(b))
+		return false, message
 	end
 
-	for key, value in tableA do
-		if tableB[key] ~= value then
-			return false
+	if typeof(a) == "number" then
+		-- Floating point error!
+		return math.abs(a - b) < 0.0001
+	end
+
+	if typeof(a) == "table" then
+		local visitedKeys = {}
+
+		for key, value in a do
+			visitedKeys[key] = true
+
+			local success, innerMessage = deepEqual(value, b[key])
+			if not success and innerMessage then
+				local message = innerMessage
+					:gsub("{1}", ("{1}[%s]"):format(prettytostring(key)))
+					:gsub("{2}", ("{2}[%s]"):format(prettytostring(key)))
+
+				return false, message
+			end
 		end
-	end
 
-	for key, value in tableB do
-		if tableA[key] ~= value then
-			return false
+		for key, value in b do
+			if not visitedKeys[key] then
+				local success, innerMessage = deepEqual(value, a[key])
+
+				if not success and innerMessage then
+					local message = innerMessage
+						:gsub("{1}", ("{1}[%s]"):format(prettytostring(key)))
+						:gsub("{2}", ("{2}[%s]"):format(prettytostring(key)))
+
+					return false, message
+				end
+			end
 		end
+
+		return true, nil
 	end
 
-	return true
+	if a == b then
+		return true, nil
+	end
+
+	local message = "{1} ~= {2}"
+	return false, message
 end
 
 local function interface(failCallback: (err: string) -> (), successCallback: () -> ()): Interface
-	local formatString = failureFormatStrings.equality
-
 	local function expectEqual<T>(left: T, right: T)
-		if typeof(left) == "table" and typeof(right == "table") then
-			if shallowEquals(left, right) then
-				successCallback()
-				return
-			end
-		elseif typeof(left) == "number" and typeof(right) == "number" then
-			if math.abs(left - right) < 0.0001 then
-				successCallback()
-				return
-			end
-		elseif left == right then
+		local equality = deepEqual(left, right)
+
+		if equality then
 			successCallback()
 			return
 		end
 
-		local leftStr = formatTostring(left)
-		local rightStr = formatTostring(right)
-
-		failCallback(string.format(formatString, leftStr, rightStr))
+		failCallback(
+			string.format(
+				failureFormatStrings.equality,
+				prettytostring(left),
+				prettytostring(right)
+			)
+		)
 	end
 
 	local function expectTruthy<T>(value: T)
@@ -98,7 +124,7 @@ local function interface(failCallback: (err: string) -> (), successCallback: () 
 			return
 		end
 
-		failCallback(string.format(failureFormatStrings.truthy, formatTostring(value)))
+		failCallback(string.format(failureFormatStrings.truthy, prettytostring(value)))
 	end
 
 	return {
