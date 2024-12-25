@@ -1,13 +1,13 @@
-local types = require("@src/types")
+local uiTypes = require("@src/uiTypes")
 local vide = require("@pkg/vide")
 
 return function(props: {
-	size: types.UsedAs<UDim2>?,
-	position: types.UsedAs<UDim2>?,
-	anchorPoint: types.UsedAs<Vector2>?,
+	size: uiTypes.UsedAs<UDim2>?,
+	position: uiTypes.UsedAs<UDim2>?,
+	anchorPoint: uiTypes.UsedAs<Vector2>?,
 
-	color: types.UsedAs<Color3>?,
-	transparency: types.UsedAs<number>?,
+	color: uiTypes.UsedAs<Color3>?,
+	transparency: uiTypes.UsedAs<number>?,
 
 	[number]: Instance | (() -> any) | (() -> { any }),
 })

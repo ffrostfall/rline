@@ -14,6 +14,42 @@ return function()
 		height(sizing.baseLines * sizing.lineHeight)
 	end)
 
+	local scroll: ScrollingFrame
+	scroll = vide.create("ScrollingFrame")({
+		Size = UDim2.new(1, -styling.sizing.terminalPadding, 1, -styling.sizing.lineHeight),
+		Position = UDim2.fromScale(0.5, 0),
+		BackgroundTransparency = 1,
+		AnchorPoint = Vector2.new(0.5, 0),
+		CanvasSize = function()
+			local scrollHeight = #state.lines() * styling.sizing.lineHeight
+			if scroll then
+				scroll.CanvasPosition = Vector2.new(0, scrollHeight)
+			end
+
+			return UDim2.new(0, 0, 0, scrollHeight)
+		end,
+
+		ScrollBarImageColor3 = styling.palette.scroll,
+		ScrollBarImageTransparency = 1,
+		TopImage = "",
+		BottomImage = "",
+
+		vide.create("UIListLayout")({
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			FillDirection = Enum.FillDirection.Vertical,
+
+			VerticalAlignment = Enum.VerticalAlignment.Bottom,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		}),
+
+		vide.indexes(state.lines, function(text, index)
+			return line({
+				text = text(),
+				order = index,
+			})
+		end),
+	})
+
 	return container({
 		size = function()
 			return UDim2.new(sizing.terminalWidth, 0, 0, height())
@@ -36,25 +72,7 @@ return function()
 			Color = styling.palette.background,
 		}),
 
-		container({
-			size = UDim2.new(1, -styling.sizing.terminalPadding, 1, -45),
-
-			vide.create("UIListLayout")({
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				FillDirection = Enum.FillDirection.Vertical,
-
-				VerticalAlignment = Enum.VerticalAlignment.Bottom,
-				HorizontalAlignment = Enum.HorizontalAlignment.Center,
-			}),
-
-			vide.indexes(state.lines, function(text, index)
-				return line({
-					text = text(),
-					order = index,
-				})
-			end),
-		}),
-
+		scroll,
 		input(),
 	})
 end

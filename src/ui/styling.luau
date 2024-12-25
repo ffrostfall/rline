@@ -6,6 +6,7 @@ local blueishgray = Color3.fromHex("#1F2832")
 return {
 	palette = {
 		text = white,
+		scroll = white,
 		background = black,
 
 		border = blueishgray,
@@ -22,6 +23,8 @@ return {
 		baseLines = 20,
 
 		textSize = 18,
+
+		additionalLines = 50,
 	},
 
 	primaryFont = Font.new("rbxassetid://16658246179"),

@@ -9,7 +9,7 @@ local CODEMAP = {
 	[29] = "</s>",
 	[39] = "</font>",
 
-	[31] = '<font color="rgb(255,102,50)">',
+	[31] = '<font color="rgb(255,50,50)">',
 	[34] = '<font color="rgb(50,102,255)">',
 	[36] = '<font color="rgb(153, 255, 255)">',
 	[90] = '<font color="rgb(160, 160, 160)">',
