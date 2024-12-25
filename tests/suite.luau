@@ -135,7 +135,7 @@ local function interface(failCallback: (err: string) -> (), successCallback: () 
 	}
 end
 
-local function case(cases: { () -> boolean }, name: string, test: (interface: Interface) -> ())
+local function case(name: string, test: (interface: Interface) -> ()): () -> boolean
 	local checks: { boolean } = {}
 	local failureMessages: { string } = {}
 
@@ -146,7 +146,7 @@ local function case(cases: { () -> boolean }, name: string, test: (interface: In
 		table.insert(checks, true)
 	end)
 
-	table.insert(cases, function(): boolean
+	return function(): boolean
 		local success, err: any = pcall(test, caseInterface)
 
 		if success and not table.find(checks, false) then
@@ -163,14 +163,14 @@ local function case(cases: { () -> boolean }, name: string, test: (interface: In
 		end
 
 		return false
-	end)
+	end
 end
 
 return function()
 	local cases: { () -> boolean } = {}
 
 	return function(name: string, test: (interface: Interface) -> ())
-		case(cases, name, test)
+		table.insert(cases, case(name, test))
 	end, function()
 		return cases
 	end

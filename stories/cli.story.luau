@@ -14,15 +14,8 @@ return uilabs.CreateVideStory({
 	local app = cli()
 
 	local style = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
-	local style2 = colorful.combineStyles({ colorful.color.green, colorful.modifier.italic })
-	local style3 = colorful.combineStyles({ colorful.color.cyan, colorful.modifier.strikethrough })
 
-	state.lines({
-		style("test1"),
-		style3("test2"),
-		style2("test3"),
-		"test4",
-	})
+	state.lines(table.create(props.controls.lineCount(), style("test")))
 
 	return function()
 		return app
