@@ -1,43 +1,51 @@
-local vide = require("@pkg/vide")
-
 --[[
 	Private
 ]]
 
--- UI
-export type UsedAs<T> = vide.Source<T> | T
-
--- Terminal
-export type TypeValidator<T> = {
-	validate: (value: unknown) -> boolean,
-
-	fromString: (value: T) -> string,
-	toString: (text: string) -> T,
+-- Shell env
+export type NumberValue = {
+	kind: "number",
+	value: number,
+}
+export type StringValue = {
+	kind: "string",
+	value: string,
+}
+export type BooleanValue = {
+	kind: "boolean",
+	value: boolean,
 }
 
-export type Parameter<T> = {
-	name: string,
-	description: string,
-	position: number,
+export type Value = | NumberValue | StringValue | BooleanValue
 
-	type: TypeValidator<T>,
-	default: T,
+-- Shell commands
+
+export type Parameter = {
+	kind: "number" | "string" | "boolean",
+	optional: boolean,
 }
 
-export type Flag = {
-	name: string,
-	default: boolean,
-}
-
-export type Command = {
-	name: string,
-	description: string,
-
-	parameters: { Parameter<any> },
-}
+export type InternalCommand = Command<{ [number]: Parameter }>
 
 --[[
 	Public
 ]]
+
+export type Context = {
+	caller: Player,
+
+	print: (text: string) -> (),
+}
+
+export type Command<T> = {
+	name: string,
+	description: string,
+	context: "client" | "server",
+
+	capabilities: { string },
+	parameters: T,
+
+	execute: (params: T, ctx: Context) -> (),
+}
 
 return nil
