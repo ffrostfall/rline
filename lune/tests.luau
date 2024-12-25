@@ -11,7 +11,7 @@ local luaurc = serde.decode("json", fs.readFile(".luaurc"))
 local Vector3 = ((roblox :: any).Vector3) :: typeof(Vector3)
 local CFrame = (roblox :: any).CFrame :: typeof(CFrame)
 
-local stuff = {}
+local testCases = {}
 
 function injectedRequire(path: string): any
 	if string.sub(path, 1, 5) == "@lune" then
@@ -78,16 +78,16 @@ function env()
 end
 
 for _, fileName in tests do
-	stuff[fileName] = luau.load(luau.compile(fs.readFile(`tests/lune/{fileName}`)), {
+	testCases[fileName] = luau.load(luau.compile(fs.readFile(`tests/lune/{fileName}`)), {
 		environment = env(),
 	})
 end
 
-for fileName, runner in stuff do
+for fileName, runner in testCases do
 	local results = runner()
 	print(colorful.modifier.bold(fileName))
 
-	for _, func in results do
-		func()
+	for _, case in results do
+		case()
 	end
 end
