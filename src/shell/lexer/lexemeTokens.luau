@@ -7,7 +7,7 @@ export type Lexeme = {
 } | {
 	kind: "localuser",
 } | {
-	kind: "environmentVariable",
+	kind: "variableAccess",
 } | {
 	kind: "stmtSeparator",
 } | {
@@ -30,7 +30,7 @@ export type Tokenizer =
 	& ((kind: "number", value: number) -> Lexeme)
 	& ((kind: "identifier", value: string) -> Lexeme)
 	& ((kind: "localuser") -> Lexeme)
-	& ((kind: "environmentVariable") -> Lexeme)
+	& ((kind: "variableAccess") -> Lexeme)
 	& ((kind: "flag") -> Lexeme)
 	& ((kind: "stmtSeparator") -> Lexeme)
 	& ((kind: "minus") -> Lexeme)

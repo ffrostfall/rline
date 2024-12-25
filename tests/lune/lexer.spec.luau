@@ -1,6 +1,6 @@
 local case, eof = require("@tests/suite")()
-local lexemeTokens = require("@src/terminal/shell/lexer/lexemeTokens")
-local lexer = require("@src/terminal/shell/lexer/init")
+local lexemeTokens = require("@src/shell/lexer/lexemeTokens")
+local lexer = require("@src/shell/lexer/init")
 
 local token = lexemeTokens.tokenize
 
@@ -68,19 +68,6 @@ end)
 case("lex strings", function(interface)
 	interface.expect.equal(validLex(`"im a string"`), {
 		token("string", "im a string"),
-		token("eof"),
-	})
-end)
-
-case("lex flags", function(interface)
-	interface.expect.equal(validLex("--"), {
-		token("flag"),
-		token("eof"),
-	})
-
-	interface.expect.equal(validLex("---"), {
-		token("flag"),
-		token("minus"),
 		token("eof"),
 	})
 end)

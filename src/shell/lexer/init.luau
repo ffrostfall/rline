@@ -1,5 +1,5 @@
-local errors = require("@src/terminal/shell/lexer/errors")
-local lexemeTokens = require("@src/terminal/shell/lexer/lexemeTokens")
+local errors = require("@src/shell/lexer/errors")
+local lexemeTokens = require("@src/shell/lexer/lexemeTokens")
 local result = require("@src/util/result")
 
 local function isNumeric(char: string): boolean
@@ -95,9 +95,9 @@ return function(input: string): result.Identity<{ lexemeTokens.Lexeme }>
 		elseif isWhitespace(char) then
 			cursor += 1
 			token("whitespace")
-		elseif char == "%" then
+		elseif char == "$" then
 			cursor += 1
-			token("environmentVariable")
+			token("variableAccess")
 		else
 			return result(false, errors.UNKNOWN_CHARACTER)
 		end
