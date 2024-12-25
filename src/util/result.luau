@@ -4,6 +4,7 @@ export type Identity<T> = {
 } | {
 	success: false,
 	err: string,
+	trace: string,
 }
 
 return (
@@ -17,6 +18,7 @@ return (
 			else
 				return {
 					success = false,
+					trace = debug.traceback(),
 					err = resultOrError,
 				}
 			end
