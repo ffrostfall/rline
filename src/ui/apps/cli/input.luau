@@ -13,10 +13,14 @@ return function()
 
 		BackgroundTransparency = 1,
 
-		TextSize = styling.sizing.textSize,
+		TextSize = styling.sizes.textSize,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextColor3 = styling.palette.text,
 		FontFace = styling.primaryFont,
+
+		TextEditable = function()
+			return not state.busy()
+		end,
 
 		FocusLost = function(enterPressed)
 			if enterPressed then
@@ -40,11 +44,13 @@ return function()
 	end)
 
 	return container({
+		-- props
 		anchorPoint = Vector2.new(0.5, 1),
-		size = UDim2.new(1, -styling.sizing.terminalPadding, 0, styling.sizing.lineHeight),
+		size = UDim2.new(1, -styling.sizes.terminalPadding, 0, styling.sizes.lineHeight),
 		position = UDim2.new(0.5, 0, 1, 0),
-
 		transparency = 1,
+
+		-- children
 		textBox,
 	})
 end

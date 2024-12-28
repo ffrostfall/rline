@@ -25,7 +25,7 @@ export type Parameter = {
 	optional: boolean,
 }
 
-export type InternalCommand = Command<{ [number]: Parameter }>
+export type InternalCommand = Command<any>
 
 --[[
 	Public
@@ -37,15 +37,15 @@ export type Context = {
 	print: (text: string) -> (),
 }
 
-export type Command<T> = {
+export type Command<T...> = {
 	name: string,
 	description: string,
 	context: "client" | "server",
 
 	capabilities: { string },
-	parameters: T,
+	parameters: <T...>() -> T...,
 
-	execute: (params: T, ctx: Context) -> (),
+	execute: (ctx: Context, T...) -> (),
 }
 
 return nil

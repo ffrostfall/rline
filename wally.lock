@@ -15,7 +15,12 @@ dependencies = []
 [[package]]
 name = "ffrostfall/rline"
 version = "0.0.0-a"
-dependencies = [["signal", "ffrostfall/luausignal@0.2.1"], ["vide", "alicesaidhi/vide@0.3.1-lite.649"], ["ui-labs", "pepeeltoro41/ui-labs@2.3.0"]]
+dependencies = [["signal", "ffrostfall/luausignal@0.2.1"], ["t", "osyrisrblx/t@3.1.1"], ["vide", "alicesaidhi/vide@0.3.1-lite.649"], ["ui-labs", "pepeeltoro41/ui-labs@2.3.0"]]
+
+[[package]]
+name = "osyrisrblx/t"
+version = "3.1.1"
+dependencies = []
 
 [[package]]
 name = "pepeeltoro41/ui-labs"

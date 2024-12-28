@@ -25,7 +25,7 @@ return function(props: Props)
 
 	return vide.create("TextBox")({
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Size = UDim2.new(1, 0, 0, styling.sizing.lineHeight),
+		Size = UDim2.new(1, 0, 0, styling.sizes.lineHeight),
 		LayoutOrder = props.order,
 
 		BackgroundTransparency = 1,
@@ -35,7 +35,7 @@ return function(props: Props)
 		end,
 
 		TextColor3 = styling.palette.text,
-		TextSize = styling.sizing.textSize,
+		TextSize = styling.sizes.textSize,
 		TextEditable = false,
 
 		FontFace = styling.primaryFont,

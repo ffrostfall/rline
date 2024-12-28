@@ -14,7 +14,7 @@ return {
 		highlight = pastelblue,
 	},
 
-	sizing = {
+	sizes = {
 		terminalWidth = 0.8,
 		terminalPadding = 4,
 

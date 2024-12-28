@@ -61,6 +61,10 @@ function solver.input(stmts: { parser.Stmt }): ShellResult
 	return commands
 end
 
+function solver.value(value: types.Value): any
+	return value.value
+end
+
 function solver.solveCommand(stmt: parser.Stmt): ShellCommand
 	local parameters = {}
 

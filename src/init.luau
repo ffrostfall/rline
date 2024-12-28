@@ -6,6 +6,7 @@ local env = require("@src/shell/env")
 local mount = require("@src/ui/mount")
 local net = require("@src/net")
 local server = require("@src/net/server")
+local shell = require("@src/shell")
 local state = require("@src/ui/state")
 local types = require("@src/types")
 
@@ -28,16 +29,19 @@ end
 local rline = {
 	capabilities = {},
 	t = {},
+	shell = {},
+	ui = {},
+
 	colorful = colorful,
 }
 
-function rline.open()
+function rline.ui.open()
 	assertRunContext("client")
 
 	state.open(true)
 end
 
-function rline.setVisible(visible: boolean)
+function rline.ui.setVisible(visible: boolean)
 	assertRunContext("client")
 
 	state.open(visible)
@@ -57,8 +61,16 @@ end
 
 function rline.command<T>(config: types.Command<T>) end
 
-function rline.setEnv(name: string, value: types.Value)
+function rline.shell.setEnv(name: string, value: types.Value)
+	assertRunContext("client")
+
 	env.set(name, value)
+end
+
+function rline.shell.print(text: string)
+	assertRunContext("client")
+
+	shell.print(text)
 end
 
 --[[

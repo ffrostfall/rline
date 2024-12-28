@@ -5,6 +5,8 @@ local signal = require("@pkg/signal")
 local solver = require("@src/shell/solver")
 local types = require("@src/types")
 
+export type ShellFunction = () -> ()
+
 local errorStyle = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
 local lineAdded = signal()
 local lines: { string } = {}
@@ -48,6 +50,8 @@ function shell.exec(input: string)
 		shell.print(func(command.parameters))
 	end
 end
+
+function shell.setFunction(name: string, func: (params: { types.Value }) -> ()) end
 
 function shell.print(text: string)
 	table.insert(lines, text)

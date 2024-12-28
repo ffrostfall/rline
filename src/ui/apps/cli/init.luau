@@ -5,7 +5,7 @@ local state = require("@src/ui/state")
 local styling = require("@src/ui/styling")
 local vide = require("@pkg/vide")
 
-local sizing = styling.sizing
+local sizing = styling.sizes
 
 return function()
 	local height = vide.source() :: vide.Source<number>
@@ -16,12 +16,12 @@ return function()
 
 	local scroll: ScrollingFrame
 	scroll = vide.create("ScrollingFrame")({
-		Size = UDim2.new(1, -styling.sizing.terminalPadding, 1, -styling.sizing.lineHeight),
+		Size = UDim2.new(1, -styling.sizes.terminalPadding, 1, -styling.sizes.lineHeight),
 		Position = UDim2.fromScale(0.5, 0),
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 0),
 		CanvasSize = function()
-			local scrollHeight = #state.lines() * styling.sizing.lineHeight
+			local scrollHeight = #state.lines() * styling.sizes.lineHeight
 			if scroll then
 				scroll.CanvasPosition = Vector2.new(0, scrollHeight)
 			end
