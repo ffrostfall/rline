@@ -1,5 +1,5 @@
+local client = require("@src/net/client")
 local container = require("@components/container")
-local shell = require("@src/shell")
 local state = require("@src/ui/state")
 local styling = require("@src/ui/styling")
 local vide = require("@pkg/vide")
@@ -24,13 +24,12 @@ return function()
 
 		FocusLost = function(enterPressed)
 			if enterPressed then
-				shell.exec(textBox.Text)
-
-				textBox:CaptureFocus()
-
 				task.delay(0, function()
 					textBox.Text = "\0"
 				end)
+				client.execute(textBox.Text)
+
+				textBox:CaptureFocus()
 			end
 		end,
 	})

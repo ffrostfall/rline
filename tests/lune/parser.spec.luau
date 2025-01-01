@@ -146,4 +146,41 @@ case("command with addition & negation", function(interface)
 	})
 end)
 
+case("command with string", function(interface)
+	local tree = ast('identifier "string"')
+
+	interface.expect.equal(tree, {
+		{
+			kind = "cmd",
+			name = "identifier",
+			params = {
+				{
+					kind = "string",
+					value = "string",
+				},
+			},
+		},
+	})
+end)
+
+case("keyword expression", function(interface)
+	local tree = ast(`echo -inf`)
+
+	interface.expect.equal(tree, {
+		{
+			kind = "cmd",
+			name = "echo",
+			params = {
+				{
+					kind = "negate",
+					expr = {
+						kind = "number",
+						value = math.huge,
+					},
+				},
+			},
+		},
+	})
+end)
+
 return eof()

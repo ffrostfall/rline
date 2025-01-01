@@ -1,33 +1,22 @@
 local ContextActionService = game:GetService("ContextActionService")
 
-local client = require("@src/net/client")
 local rline = require("@src/")
 
 local visible = false
 
-rline.command({
+rline.addClientCommand({
 	name = "echo",
 	description = "Echoes text back into output",
-	context = "server",
 
 	capabilities = { "player" },
-	parameters = {
-		rline.t.string(),
-	},
+	parameters = function()
+		return rline.t.string()
+	end,
 
-	execute = function(params, ctx)
-		ctx.print(params[1])
+	execute = function(ctx, text)
+		ctx.print(text)
 	end,
 })
-
-task.delay(2, function()
-	client.invokeCommand("echo", {
-		{
-			kind = "boolean",
-			value = true,
-		},
-	})
-end)
 
 ContextActionService:BindAction("rline", function(_, state)
 	if state == Enum.UserInputState.Begin then

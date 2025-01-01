@@ -1,67 +1,45 @@
-local colorful = require("@src/colorful")
 local lexer = require("@src/shell/lexer")
 local parser = require("@src/shell/parser")
-local signal = require("@pkg/signal")
+local result = require("@src/util/result")
 local solver = require("@src/shell/solver")
-local types = require("@src/types")
-
-export type ShellFunction = () -> ()
-
-local errorStyle = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
-local lineAdded = signal()
-local lines: { string } = {}
-local cmds: { [string]: (parameters: { types.Value }) -> string } = {
-	["echo"] = function(parameters: { types.Value })
-		print(parameters)
-		return tostring(parameters[1].value)
-	end,
-}
+local vm = require("./vm")
 
 local shell = {}
 
-function shell.exec(input: string)
-	shell.print(`>{input}`)
-
+function shell.parse(input: string): result.Identity<{ vm.CommandTask }>
 	local lexed = lexer(input)
 	if not lexed.success then
-		shell.print(errorStyle(`failure to lex command: {lexed.err}`))
 		warn(`[lexer]: {lexed.err}`)
 		print(lexed.trace)
-		return
+		return lexed
 	end
 
 	local parsed = parser(lexed.value)
 	if not parsed.success then
-		shell.print(errorStyle(`failure to parse command: {parsed.err}`))
 		warn(`[parser]: {parsed.err}`)
 		print(parsed.trace)
-		return
+		return parsed
 	end
 
-	local solved = solver.input(parsed.value)
+	local commands = {}
+	for _, cmd in parsed.value do
+		local solvedParams = {}
 
-	for _, command in solved do
-		local func = cmds[command.cmd]
-		if not func then
-			shell.print(errorStyle(`{command.cmd} is not the name of a command in the registry`))
-			continue
+		for _, expr in cmd.params do
+			table.insert(solvedParams, solver.solveExpr(expr))
 		end
 
-		shell.print(func(command.parameters))
+		table.insert(commands, {
+			name = cmd.name,
+			params = solvedParams,
+		})
 	end
+
+	return result(true, commands)
 end
 
-function shell.setFunction(name: string, func: (params: { types.Value }) -> ()) end
-
-function shell.print(text: string)
-	table.insert(lines, text)
-	lineAdded:fire()
+function shell.vm(): vm.Identity
+	return vm.new()
 end
-
-function shell.onLineAdded(callback: () -> ())
-	return lineAdded:connect(callback)
-end
-
-shell.lines = lines
 
 return shell

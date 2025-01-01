@@ -1,12 +1,12 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
+local client = require("@src/net/client")
 local colorful = require("@src/colorful")
 local env = require("@src/shell/env")
 local mount = require("@src/ui/mount")
 local net = require("@src/net")
 local server = require("@src/net/server")
-local shell = require("@src/shell")
 local state = require("@src/ui/state")
 local types = require("@src/types")
 
@@ -59,18 +59,22 @@ function rline.capabilities.revoke(player: Player, capability: string)
 	server.revokeCapability(player, capability)
 end
 
-function rline.command<T>(config: types.Command<T>) end
+function rline.addClientCommand<T...>(config: types.Command<T...>)
+	assertRunContext("client")
 
-function rline.shell.setEnv(name: string, value: types.Value)
+	client.addCommand(config)
+end
+
+function rline.addServerCommand<T...>(config: types.Command<T...>)
+	assertRunContext("server")
+
+	server.addCommand(config)
+end
+
+function rline.shell.setEnv(name: string, value: types.ShellValue)
 	assertRunContext("client")
 
 	env.set(name, value)
-end
-
-function rline.shell.print(text: string)
-	assertRunContext("client")
-
-	shell.print(text)
 end
 
 --[[
@@ -81,11 +85,11 @@ function rline.t.number(): number
 	return parameter("number", false) :: any
 end
 
-function rline.t.string()
+function rline.t.string(): string
 	return parameter("string", false) :: any
 end
 
-function rline.t.boolean()
+function rline.t.boolean(): boolean
 	return parameter("boolean", false) :: any
 end
 

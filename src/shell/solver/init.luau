@@ -10,7 +10,7 @@ local function assertNumber(value: parser.Expr): types.NumberValue
 	return value
 end
 
-local function recursiveSolving(expr: parser.Expr): types.Value
+local function recursiveSolving(expr: parser.Expr): types.ShellValue
 	if expr.kind == "add" then
 		local leftSolved = recursiveSolving(expr.leftExpr)
 		local rightSolved = recursiveSolving(expr.rightExpr)
@@ -23,7 +23,7 @@ local function recursiveSolving(expr: parser.Expr): types.Value
 			value = left.value + right.value,
 		}
 	elseif expr.kind == "negate" then
-		local solved = recursiveSolving(expr)
+		local solved = recursiveSolving(expr.expr)
 		local node = assertNumber(solved)
 
 		return {
@@ -43,43 +43,9 @@ local function recursiveSolving(expr: parser.Expr): types.Value
 	return error("unreachable")
 end
 
-export type ShellCommand = {
-	cmd: string,
-	parameters: { any },
-}
-export type ShellResult = { ShellCommand }
-
 local solver = {}
 
-function solver.input(stmts: { parser.Stmt }): ShellResult
-	local commands = {}
-
-	for _, stmt in stmts do
-		table.insert(commands, solver.solveCommand(stmt))
-	end
-
-	return commands
-end
-
-function solver.value(value: types.Value): any
-	return value.value
-end
-
-function solver.solveCommand(stmt: parser.Stmt): ShellCommand
-	local parameters = {}
-
-	for _, expr in stmt.params do
-		table.insert(parameters, solver.solveExpr(expr))
-	end
-
-	return {
-		cmd = stmt.name,
-
-		parameters = parameters,
-	}
-end
-
-function solver.solveExpr(expr: parser.Expr): types.Value
+function solver.solveExpr(expr: parser.Expr): types.ShellValue
 	return recursiveSolving(expr)
 end
 

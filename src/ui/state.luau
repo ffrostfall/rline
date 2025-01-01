@@ -1,9 +1,8 @@
-local shell = require("@src/shell")
 local vide = require("@pkg/vide")
 
 local state = {}
 
-state.lines = vide.source(shell.lines) :: vide.Source<{ string }>
+state.lines = vide.source({}) :: vide.Source<{ string }>
 state.inCommand = vide.source(false) :: vide.Source<boolean>
 state.open = vide.source(false) :: vide.Source<boolean>
 state.busy = vide.source(false) :: vide.Source<boolean>

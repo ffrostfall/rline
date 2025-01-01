@@ -12,7 +12,7 @@ end
 
 export type CommandExecutionPacket = {
 	cmd: string,
-	parameters: { types.Value },
+	parameters: { types.ShellValue },
 }
 
 export type CommandExecutionResponse = {

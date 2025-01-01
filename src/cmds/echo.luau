@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local rline = ...
 local externalLogger = ...
 local playerType = rline.t.new({
-	parse = function<T>(str: string): T
+	parse = function(str: string)
 		return Players:FindFirstChild(str) or error("h")
 	end,
 	autofill = function(partial: string) end,
@@ -32,19 +32,14 @@ rline.command({
 
 	capabilities = { "player", "admin" },
 	parameters = function()
-		return rline.t.string(), rline.t.number()
+		return playerType
 	end,
 
-	execute = function(ctx, playerName)
-		externalLogger(`Admin {ctx.caller.UserId} ran kick command`)
+	execute = function(ctx, player: Player) -- parameter specified type
+		externalLogger(`Admin {ctx.caller.UserId} ran kick command on {player.UserId}`)
 
-		local player = Players:FindFirstChild(playerName) :: Player
-		if not player then
-			ctx.print(`Player {playerName} not found`)
-			return
-		end
-		-- plr:
 		player:Kick()
-		ctx.print(`Successfully kicked {playerName}`)
+
+		ctx.print(`Successfully kicked {player.Name}`)
 	end,
 })

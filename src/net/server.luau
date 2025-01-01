@@ -2,9 +2,13 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local colorful = require("@src/colorful")
-local encodedTypes = require("@src/net/encodedTypes")
-local solver = require("@src/shell/solver")
+local json = require("@src/util/json")
+local shell = require("@src/shell")
 local types = require("@src/types")
+local vm = require("@src/shell/vm")
+
+local errorStyle = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
+local serverCommands: { [string]: types.InternalCommand } = {}
 
 local function findValue(player: Player): StringValue
 	local value = player.PlayerGui:WaitForChild("rline", 1) :: StringValue
@@ -13,9 +17,9 @@ local function findValue(player: Player): StringValue
 	return value
 end
 
-local cmds: { [string]: types.InternalCommand } = {}
-
-local server = {}
+local server = {
+	vm = shell.vm(),
+}
 
 function server.init()
 	Players.PlayerAdded:Connect(server._onPlayerAdded)
@@ -24,62 +28,83 @@ function server.init()
 	executeCommand.Name = "rline-executecommand"
 	executeCommand.Parent = ReplicatedStorage
 
-	executeCommand.OnServerInvoke = function(player, raw)
-		local valid = encodedTypes.validatePacket(raw)
-		if not valid then
-			return
+	executeCommand.OnServerInvoke = function(player, raw: vm.CommandTask)
+		local command = serverCommands[raw.name]
+		if not command then
+			return {
+				errorStyle(`command not found`),
+			}
 		end
 
-		local data = raw :: encodedTypes.CommandExecutionPacket
-		local chosenCommand = cmds[data.cmd]
-		local chosenCommandParams = table.pack(chosenCommand.parameters())
-		local output: { string } = {}
-		local rawParams: { string | number | boolean } = {}
-
-		for index, param in data.parameters do
-			local desiredType = (chosenCommandParams[index] :: any).kind
-			if param.kind ~= desiredType then
+		for _, capability in command.capabilities do
+			if not server.hasCapability(player, capability) then
 				return {
-					colorful.color.red(
-						`expected parameter {index} to be of type {desiredType}, got {param.kind}`
-					),
+					errorStyle(`you do not have permission to run this command`),
 				}
 			end
-
-			table.insert(rawParams, solver.value(param))
 		end
 
-		chosenCommand.execute({
-			caller = player,
-			print = function(text: string)
-				table.insert(output, text)
-			end,
-		}, table.unpack(rawParams))
+		local executionResult = server.vm:runCommandAsync(player, raw)
 
-		return output
+		if executionResult.success then
+			return executionResult.value
+		else
+			return {
+				errorStyle(`command execution failed: {executionResult.err}`),
+			}
+		end
 	end
 end
 
 function server._onPlayerAdded(player: Player)
 	local value = Instance.new("StringValue")
 	value.Name = "rline"
-
+	value.Value = "[]"
 	-- Parent to PlayerGui to prevent replication
 	value.Parent = player.PlayerGui
 
-	value:SetAttribute("")
+	server.computeCommandsFor(player)
+end
+
+function server.computeCommandsFor(player: Player)
+	local value = findValue(player)
+	local allCapabilities = {}
+	for capability in value:GetAttributes() do
+		table.insert(allCapabilities, capability)
+	end
+
+	local accessableCommands = {}
+	for commandName, command in serverCommands do
+		local hasAllCapabilities = true
+		for _, capability in command.capabilities do
+			if not table.find(allCapabilities, capability) then
+				hasAllCapabilities = false
+				break
+			end
+		end
+
+		if hasAllCapabilities then
+			table.insert(accessableCommands, commandName)
+		end
+	end
+
+	value.Value = json.encode(accessableCommands)
 end
 
 function server.addCommand(config: types.InternalCommand)
-	cmds[config.name] = config
-end
+	serverCommands[config.name] = config
+	server.vm:addCommand(config)
 
-function server.updateServerCommandData(player: Player, commandJSON: string)
-	findValue(player).Value = commandJSON
+	for _, player in Players:GetPlayers() do
+		server.computeCommandsFor(player)
+	end
 end
 
 function server.giveCapability(player: Player, capability: string)
-	findValue(player):SetAttribute(capability, true)
+	local value = findValue(player)
+
+	value:SetAttribute(capability, true)
+	server.computeCommandsFor(player)
 end
 
 function server.hasCapability(player: Player, capability: string)
@@ -88,6 +113,7 @@ end
 
 function server.revokeCapability(player: Player, capability: string)
 	findValue(player):SetAttribute(capability, nil)
+	server.computeCommandsFor(player)
 end
 
 return server

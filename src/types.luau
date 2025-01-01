@@ -1,8 +1,9 @@
 --[[
 	Private
 ]]
+export type CommandExecutor<T...> = (ctx: Context, T...) -> ()
 
--- Shell env
+-- shell value type
 export type NumberValue = {
 	kind: "number",
 	value: number,
@@ -16,7 +17,7 @@ export type BooleanValue = {
 	value: boolean,
 }
 
-export type Value = | NumberValue | StringValue | BooleanValue
+export type ShellValue = | NumberValue | StringValue | BooleanValue
 
 -- Shell commands
 
@@ -25,12 +26,11 @@ export type Parameter = {
 	optional: boolean,
 }
 
-export type InternalCommand = Command<any>
+export type InternalCommand = Command<...any>
 
 --[[
 	Public
 ]]
-
 export type Context = {
 	caller: Player,
 
@@ -40,12 +40,11 @@ export type Context = {
 export type Command<T...> = {
 	name: string,
 	description: string,
-	context: "client" | "server",
 
 	capabilities: { string },
-	parameters: <T...>() -> T...,
+	parameters: () -> T...,
 
-	execute: (ctx: Context, T...) -> (),
+	execute: CommandExecutor<T...>,
 }
 
 return nil

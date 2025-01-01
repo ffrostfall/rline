@@ -7,7 +7,7 @@ export type VariableExpr = {
 	name: string,
 }
 
-export type ValueExpr = types.Value | VariableExpr
+export type ValueExpr = types.ShellValue | VariableExpr
 
 export type NegateExpr = {
 	kind: "negate",
