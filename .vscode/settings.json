@@ -17,7 +17,8 @@
     "build/**",
     "vendor/**",
     "Packages/**",
-    ".vscode/**"
+    ".vscode/**",
+    "dist/**"
   ],
   
   "luau-lsp.sourcemap.autogenerate": false,
