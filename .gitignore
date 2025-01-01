@@ -1,7 +1,9 @@
 Packages
 DevPackages
 
+dist
 build
 sourcemap.json
+build-sourcemap.json
 
 vendor/**

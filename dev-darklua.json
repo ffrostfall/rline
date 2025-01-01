@@ -1,0 +1,28 @@
+{
+	"process": [
+		{
+			"current": {
+				"name": "path",
+				"sources": {
+					"@pkg": "Packages/",
+					"@dev-pkg": "DevPackages/",
+					"@tests": "tests/",
+					"@src": "src/",
+					"@components": "src/ui/components"
+				}
+			},
+			"rule": "convert_require",
+			"target": {
+				"indexing_style": "wait_for_child",
+				"name": "roblox",
+				"rojo_sourcemap": "dev-sourcemap.json"
+			}
+		},
+		{
+			"rule": "remove_unused_if_branch"
+		},
+		{
+			"rule": "compute_expression"
+		}
+	]
+}

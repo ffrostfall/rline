@@ -1,0 +1,9 @@
+{
+	"name": "rline-dist-sourcemap",
+	"tree": {
+		"$path": "Packages/",
+		"rline": {
+			"$path": "src/"
+		}
+	}
+}

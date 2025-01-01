@@ -5,10 +5,12 @@ return function(watch: boolean?): thread
 		"sourcemap",
 		"test-source.project.json",
 		"--output",
-		"sourcemap.json",
+		"dev-sourcemap.json",
 	}
 
-	if watch then table.insert(parameters, "--watch") end
+	if watch then
+		table.insert(parameters, "--watch")
+	end
 
 	return spawnProcess("rojo", parameters)
 end

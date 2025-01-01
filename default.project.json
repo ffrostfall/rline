@@ -1,6 +1,6 @@
 {
 	"name": "rline",
 	"tree": {
-		"$path": "build/package"
+		"$path": "dist/"
 	}
 }

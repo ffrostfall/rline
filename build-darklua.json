@@ -5,17 +5,15 @@
 				"name": "path",
 				"sources": {
 					"@pkg": "Packages/",
-					"@dev-pkg": "DevPackages/",
-					"@tests": "tests/",
-					"@src": "src/",
-					"@components": "src/ui/components"
+					"@components": "src/ui/components",
+					"@src": "src/"
 				}
 			},
 			"rule": "convert_require",
 			"target": {
 				"indexing_style": "wait_for_child",
 				"name": "roblox",
-				"rojo_sourcemap": "sourcemap.json"
+				"rojo_sourcemap": "build-sourcemap.json"
 			}
 		},
 		{
