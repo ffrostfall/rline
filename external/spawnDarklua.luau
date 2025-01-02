@@ -5,6 +5,8 @@ return function()
 		"process",
 		"src/",
 		"build/package/",
+		"--config",
+		"dev-darklua.json",
 		"--watch",
 	})
 
@@ -12,6 +14,8 @@ return function()
 		"process",
 		"stories/",
 		"build/stories/",
+		"--config",
+		"dev-darklua.json",
 		"--watch",
 	})
 
@@ -19,6 +23,8 @@ return function()
 		"process",
 		"tests/roblox/",
 		"build/tests/",
+		"--config",
+		"dev-darklua.json",
 		"--watch",
 	})
 end

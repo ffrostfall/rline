@@ -3,12 +3,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local colorful = require("@src/colorful")
 local json = require("@src/util/json")
-local shell = require("@src/shell")
 local types = require("@src/types")
 local vm = require("@src/shell/vm")
 
 local errorStyle = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
 local serverCommands: { [string]: types.InternalCommand } = {}
+local servervm: vm.Identity = nil
 
 local function findValue(player: Player): StringValue
 	local value = player.PlayerGui:WaitForChild("rline", 1) :: StringValue
@@ -17,11 +17,11 @@ local function findValue(player: Player): StringValue
 	return value
 end
 
-local server = {
-	vm = shell.vm(),
-}
+local server = {}
 
 function server.init()
+	servervm = vm.new()
+
 	Players.PlayerAdded:Connect(server._onPlayerAdded)
 
 	local executeCommand = Instance.new("RemoteFunction")
@@ -44,7 +44,7 @@ function server.init()
 			end
 		end
 
-		local executionResult = server.vm:runCommandAsync(player, raw)
+		local executionResult = servervm:runCommandAsync(player, raw)
 
 		if executionResult.success then
 			return executionResult.value
@@ -93,7 +93,7 @@ end
 
 function server.addCommand(config: types.InternalCommand)
 	serverCommands[config.name] = config
-	server.vm:addCommand(config)
+	servervm:addCommand(config)
 
 	for _, player in Players:GetPlayers() do
 		server.computeCommandsFor(player)

@@ -13,12 +13,13 @@ local serverCommands: StringValue = nil
 local errorStyle = colorful.combineStyles({ colorful.color.red, colorful.modifier.bold })
 local knownServerCommands: { string } = {}
 local invokeCommand: RemoteFunction = nil
+local clientvm: vm.Identity = nil
 
-local client = {
-	vm = shell.vm(),
-}
+local client = {}
 
 function client.init()
+	clientvm = shell.vm()
+
 	invokeCommand = ReplicatedStorage:WaitForChild("rline-executecommand") :: RemoteFunction
 	serverCommands = Players.LocalPlayer.PlayerGui:WaitForChild("rline") :: StringValue
 	env.set("localuser", {
@@ -26,11 +27,11 @@ function client.init()
 		value = Players.LocalPlayer.UserId,
 	})
 
-	client.vm:print("rline")
+	clientvm:print("rline")
 
-	state.lines(client.vm.output)
-	client.vm.onLineAdded:connect(function()
-		state.lines(client.vm.output)
+	state.lines(clientvm.output)
+	clientvm.onLineAdded:connect(function()
+		state.lines(clientvm.output)
 	end)
 
 	client._onServerCommandsChanged()
@@ -42,11 +43,11 @@ function client._onServerCommandsChanged()
 end
 
 function client.addCommand(config: types.InternalCommand)
-	client.vm:addCommand(config)
+	clientvm:addCommand(config)
 end
 
 function client.execute(input: string)
-	client.vm:print(`>{input}`)
+	clientvm:print(`>{input}`)
 	local commands = shell.parse(input)
 
 	if commands.success then
@@ -54,21 +55,25 @@ function client.execute(input: string)
 			client.localExecute(command)
 		end
 	else
-		client.vm:print(errorStyle(commands.err))
+		clientvm:print(errorStyle(commands.err))
 	end
 end
 
 function client.localExecute(commandTask: vm.CommandTask)
-	if client.vm:hasCommand(commandTask.name) then
-		client.vm:runCommandAsync(Players.LocalPlayer, commandTask)
+	if clientvm:hasCommand(commandTask.name) then
+		local output = clientvm:runCommandAsync(Players.LocalPlayer, commandTask)
+
+		if not output.success then
+			clientvm:print(errorStyle(output.err))
+		end
 	elseif table.find(knownServerCommands, commandTask.name) then
 		local output = invokeCommand:InvokeServer(commandTask) :: { string }
 
 		for _, line in output do
-			client.vm:print(line)
+			clientvm:print(line)
 		end
 	else
-		client.vm:print("not found")
+		clientvm:print("not found")
 	end
 end
 

@@ -14,7 +14,7 @@ return function()
 
 	print(styles.header("Exporting types"))
 
-	process.spawn("wally-package-types", { "--sourcemap", "sourcemap.json", "Packages" }, {
+	process.spawn("wally-package-types", { "--sourcemap", "dev-sourcemap.json", "Packages" }, {
 		stdio = "forward",
 	})
 

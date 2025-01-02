@@ -10,7 +10,7 @@ rline.addClientCommand({
 
 	capabilities = { "player" },
 	parameters = function()
-		return rline.t.string()
+		return rline.t.string(), rline.t.number()
 	end,
 
 	execute = function(ctx, text)

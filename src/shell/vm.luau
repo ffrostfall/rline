@@ -85,9 +85,10 @@ function vm.runCommandAsync(
 	local output = {}
 
 	local function shellprint(text: string)
-		table.insert(self.output, text)
+		self:print(text)
 		table.insert(output, text)
 	end
+
 	local ctx = {
 		caller = caller,
 		print = shellprint,
