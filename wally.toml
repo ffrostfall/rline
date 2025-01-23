@@ -1,6 +1,6 @@
 [dependencies]
 signal = "ffrostfall/luausignal@0.4.0"
-vide = "alicesaidhi/vide@0.3.1-lite.649"
+vide = "alicesaidhi/vide@0.3.1-lite.656"
 
 [dev-dependencies]
 ui-labs = "pepeeltoro41/ui-labs@2.3.0"
@@ -32,6 +32,6 @@ exclude = [
 name = "ffrostfall/rline"
 realm = "shared"
 registry = "https://github.com/UpliftGames/wally-index"
-version = "0.0.0-e"
+version = "0.0.0-f"
 license = "MIT"
 include = ["dist"]
